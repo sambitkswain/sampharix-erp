@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ClipboardList, X, CheckCircle2, Truck, Trash2, Filter } from "lucide-react";
 import Sidebar from "../../components/layout/Sidebar";
@@ -40,7 +40,7 @@ const RetailerOrders = () => {
     } catch (error) { alert("Failed to clear orders."); }
   };
 
-  const pendingOrdersCount = orders.filter(o => o.status === "CREATED").length;
+ // const pendingOrdersCount = orders.filter(o => o.status === "CREATED").length;
   const displayedOrders = orders.filter(o => filter === "ALL" ? true : o.status === filter);
 
   return (

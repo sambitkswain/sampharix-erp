@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package, AlertTriangle, Plus, Search, X, Edit3 } from "lucide-react";
 import Sidebar from "../../components/layout/Sidebar";

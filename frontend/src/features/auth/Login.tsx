@@ -30,7 +30,7 @@ const Login = () => {
 
       console.log(response.data);
 
-      const token = response.data.token;
+      // token = response.data.token;
 
       const role = response.data.role;
 

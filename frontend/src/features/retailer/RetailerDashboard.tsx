@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Wallet, PackageOpen, CreditCard, Search, Plus, Minus, Trash2 } from "lucide-react";
 import Sidebar from "../../components/layout/Sidebar";

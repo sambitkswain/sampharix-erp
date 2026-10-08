@@ -1,26 +1,41 @@
-import React, { ButtonHTMLAttributes } from "react";
+import type {
+  ButtonHTMLAttributes,
+  FC,
+  ReactNode,
+} from "react";
 
-// Extend standard button attributes to automatically support 'disabled', 'title', etc.
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  className?: string;
+export interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  variant?: "default" | "outline" | "destructive";
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button: FC<ButtonProps> = ({
   children,
+  variant = "default",
   className = "",
   type = "button",
-  disabled,
-  ...props // Spreads any other props like onClick, disabled, etc.
+  disabled = false,
+  ...props
 }) => {
+  const variantClass =
+    variant === "outline"
+      ? "border border-slate-300 bg-transparent text-slate-700"
+      : variant === "destructive"
+        ? "bg-red-600 text-white"
+        : "bg-blue-600 text-white";
+
   return (
     <button
+      {...props}
       type={type}
       disabled={disabled}
-      className={`px-4 py-2 rounded-lg font-medium transition hover:opacity-90 
-        ${disabled ? "opacity-50 cursor-not-allowed" : ""} 
-        ${className}`}
-      {...props}
+      className={`
+        px-4 py-2 rounded-lg font-medium transition hover:opacity-90
+        ${variantClass}
+        ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+        ${className}
+      `}
     >
       {children}
     </button>
