@@ -27,92 +27,59 @@ public class AuthService {
     // =====================================
     // REGISTER
     // =====================================
-
+    // =====================================
+    // REGISTER
+    // =====================================
     public User register(RegisterRequest request) {
+        if (request.getPhone() == null || request.getPhone().trim().isEmpty()) {
+            throw new RuntimeException("Mobile number is mandatory for registration!");
+        }
 
-        System.out.println("REGISTER API CALLED");
+        if (request.getEmail() == null || !request.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new RuntimeException("Please provide a valid email address!");
+        }
 
-        System.out.println(request.getEmail());
-
-        // Check Email
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("Email already exists in the system!");
         }
 
-        User parentUser = null;
-
-        if (request.getParentId() != null) {
-
-            parentUser = userRepository.findById(request.getParentId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Parent user not found"));
-        }
+        boolean isAutoApproved = request.getRole() == com.sambit.sampharixErp.modules.user.entity.Role.ADMIN;
 
         User user = User.builder()
-
                 .name(request.getName())
-
                 .email(request.getEmail())
-
-                .password(
-                        passwordEncoder.encode(request.getPassword())
-                )
-
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
-
                 .phone(request.getPhone())
-
                 .address(request.getAddress())
-
-                .parent(parentUser)
-
-                .active(true)
-
+                .active(isAutoApproved)
                 .build();
 
-        System.out.println("USER CREATED");
-
-        User savedUser = userRepository.save(user);
-
-        System.out.println("USER SAVED");
-
-        return savedUser;
+        return userRepository.save(user);
     }
 
     // =====================================
     // LOGIN
     // =====================================
-
     public AuthResponse login(LoginRequest request) {
-
         User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid Email or Password"));
 
-                .orElseThrow(() ->
-                        new RuntimeException("Invalid Email or Password"));
-
-        // Password Check
-        boolean passwordMatches = passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        );
-
-        if (!passwordMatches) {
-
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid Email or Password");
         }
 
-        // Generate JWT
-        // Generate JWT
-        String token =
-                jwtService.generateToken(user.getEmail());
+        // NEW: Block login if the account is not approved
+        if (user.getActive() == null || !user.getActive()) {
+            throw new RuntimeException("Your account is pending Admin approval.");
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
 
         return AuthResponse.builder()
-
                 .token(token)
-
                 .role(user.getRole().name())
-
+                .name(user.getName()) // Send the name to React
                 .build();
     }
 }

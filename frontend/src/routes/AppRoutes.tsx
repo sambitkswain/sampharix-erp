@@ -8,6 +8,7 @@ import RetailerDashboard from "../features/retailer/RetailerDashboard";
 import DistributorDashboard from "../features/distributor/DistributorDashboard";
 
 import ProtectedRoute from "../features/auth/ProtectedRoute";
+import RetailerOrders from "@/features/orders/RetailerOrders";
 
 const AppRoutes = () => {
 
@@ -64,6 +65,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/distributor/orders" element={<RetailerOrders />} />
 
       </Routes>
 
